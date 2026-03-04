@@ -1,0 +1,51 @@
+# ============================================================
+# ClawChain Backend Dependencies
+# ============================================================
+# Note: Versions are upper-bounded to avoid breaking changes.
+# Adjust if you encounter compatibility issues.
+
+# --- Core Framework ---
+fastapi>=0.115,<1.0
+uvicorn>=0.32,<1.0
+python-dotenv>=1.0,<2.0
+pydantic>=2.10,<3.0
+sse-starlette>=2.0,<3.0
+
+# --- LangChain / LangGraph ---
+langchain>=0.3,<1.0
+langgraph>=0.2,<1.0
+langchain-community>=0.3,<1.0
+langchain-experimental>=0.3,<1.0
+langchain-openai>=0.3,<1.0
+
+# --- Web Search ---
+duckduckgo-search>=7.0,<8.0
+
+# --- RAG (optional, for knowledge base) ---
+llama-index-core>=0.12,<1.0
+llama-index-embeddings-openai>=0.3,<1.0
+
+# --- Utilities ---
+jieba>=0.42,<1.0
+tiktoken>=0.8,<1.0
+html2text>=2024.2,<2025.0
+httpx>=0.28,<1.0
+pyyaml>=6.0,<7.0
+
+# --- File Watching (memory index auto-update) ---
+watchdog>=4.0,<5.0
+
+# --- Cron Scheduling (heartbeat & timers) ---
+croniter>=2.0,<3.0
+
+# --- Optional: Local Vector Embeddings ---
+# Uncomment if using local embeddings (memorySearch.provider=local + vector.enabled=true)
+# sentence-transformers>=3.0
+
+# --- Optional: Anthropic Models ---
+# Uncomment if using Anthropic provider (api: anthropic-messages)
+# langchain-anthropic>=0.3
+
+# --- Optional: Ollama Models ---
+# Uncomment if using Ollama provider (api: ollama)
+# langchain-ollama>=0.2

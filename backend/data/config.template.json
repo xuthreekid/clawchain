@@ -1,0 +1,138 @@
+{
+  "agents": {
+    "defaults": {
+      "model": null,
+      "user_timezone": "Asia/Shanghai",
+      "recursion_limit": 50,
+      "contextTokens": 200000,
+      "thinkingDefault": "off",
+      "compaction": {
+        "enabled": true,
+        "threshold": 0.8,
+        "reserveTokens": 20000,
+        "keepRecentTokens": 8000,
+        "maxHistoryShare": 0.5,
+        "memoryFlush": true,
+        "softThresholdTokens": 4000
+      },
+      "contextPruning": {
+        "softTrim": true,
+        "toolOutputMaxChars": 3000,
+        "recentPreserve": 4
+      },
+      "subagents": {
+        "allow_agents": ["*"],
+        "max_spawn_depth": 2,
+        "max_children_per_agent": 5,
+        "archive_after_minutes": 60,
+        "recent_minutes": 30,
+        "run_timeout_seconds": 0
+      },
+      "heartbeat": {
+        "enabled": false,
+        "every": "30m",
+        "ackMaxChars": 300,
+        "activeHours": { "start": "08:00", "end": "24:00" },
+        "target": "webchat"
+      },
+      "memorySearch": {
+        "store": { "vector": { "enabled": false } },
+        "query": { "hybrid": { "enabled": false, "vectorWeight": 0.5, "textWeight": 0.5 } },
+        "provider": "local",
+        "model": "text-embedding-3-small",
+        "remote": { "baseUrl": "", "apiKey": "" }
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "name": "Assistant",
+        "description": "Default general-purpose assistant"
+      }
+    ]
+  },
+  "models": {
+    "providers": {}
+  },
+  "tools": {
+    "fs": { "workspace_only": true, "readonly_dirs": ["docs"] },
+    "exec": {
+      "apply_patch": { "enabled": false },
+      "approval": {
+        "security": "full",
+        "ask": "on_miss",
+        "ask_timeout_seconds": 60,
+        "allowlist": []
+      }
+    },
+    "web": {
+      "search": {
+        "provider": "duckduckgo",
+        "apiKey": "",
+        "baseUrl": ""
+      }
+    }
+  },
+  "chat": { "timeoutSeconds": 120 },
+  "session": {
+    "maintenance": {
+      "mode": "warn",
+      "pruneAfter": "30d",
+      "maxEntries": 500
+    }
+  },
+  "cron": { "enabled": false },
+  "rag_mode": false,
+  "auto_compaction": {
+    "enabled": true,
+    "threshold_tokens": 80000,
+    "warning_tokens": 60000
+  },
+  "session_pruning": {
+    "enabled": true,
+    "tool_output_max_chars": 3000,
+    "recent_preserve": 4
+  },
+  "app": {
+    "locale": "zh-CN",
+    "theme": "system",
+    "dataDir": null,
+    "logLevel": "info",
+    "proxy": null
+  },
+  "notifications": {
+    "enabled": true,
+    "sound": true,
+    "badge": true,
+    "quietHours": { "start": "23:00", "end": "08:00" }
+  },
+  "sandbox": {
+    "mode": "soft",
+    "snapshotBeforeExec": false,
+    "undoStackSize": 50,
+    "writeApproval": "on_overwrite"
+  },
+  "backup": {
+    "autoBackup": false,
+    "intervalHours": 24,
+    "maxSnapshots": 10,
+    "backupDir": null
+  },
+  "runtime": {
+    "maxConcurrentSessions": 5,
+    "memoryLimitMB": 0,
+    "processTimeoutSeconds": 300,
+    "gcIdleMinutes": 30
+  },
+  "skills": {
+    "autoDiscover": true,
+    "trustedSources": [],
+    "updateCheck": false
+  },
+  "browser": {
+    "enabled": false,
+    "headless": true,
+    "viewport": "1280x720",
+    "proxy": null
+  }
+}

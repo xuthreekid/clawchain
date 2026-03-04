@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- App Sandbox -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+
+    <!-- 网络访问（连接本地 Python 后端） -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- 用户通过文件选择器授权的目录读写 -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- 安全书签（记住用户授权的目录） -->
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
+
+    <!-- AppleScript（控制系统日历、邮件等） -->
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+
+    <!-- 通知推送 -->
+    <key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
+    <array>
+        <string>com.apple.usernoted</string>
+    </array>
+</dict>
+</plist>

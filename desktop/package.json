@@ -1,0 +1,18 @@
+{
+  "name": "clawchain-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "doctor": "node scripts/doctor.mjs",
+    "dev": "concurrently -k \"npm:dev:frontend\" \"npm:dev:tauri\"",
+    "dev:frontend": "cd ../frontend && PORT=3717 npm run dev",
+    "dev:tauri": "CI=false npx tauri dev --config src-tauri/tauri.conf.json",
+    "build:frontend": "cd ../frontend && TAURI_BUILD=1 npm run build",
+    "build:tauri": "CI=false npx tauri build --config src-tauri/tauri.conf.json",
+    "build": "npm run build:frontend && npm run build:tauri"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}
