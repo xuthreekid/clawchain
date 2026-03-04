@@ -293,21 +293,10 @@ export function useChat(
           }
 
           case "session_reset": {
+            // /new or /reset: 重置本地状态，但保持当前 assistant 消息用于接收后续问候
             setLifecycleEvents([]);
             setLastUsage(null);
-            const ts = Date.now();
-            setMessages(prev => [
-              ...prev,
-              {
-                id: `assistant-${ts}-greeting`,
-                role: "assistant",
-                content: "",
-                createdAt: ts,
-                toolCalls: [],
-                retrievals: [],
-                isStreaming: true,
-              },
-            ]);
+            // 不创建新的 assistant 消息，继续用当前的 assistantMsgId 接收后续问候响应
             break;
           }
 
