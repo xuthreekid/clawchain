@@ -142,7 +142,8 @@ export function useChat(
         switch (event.type) {
           case "token":
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant") {
                 const updated = prev.slice();
@@ -155,7 +156,8 @@ export function useChat(
 
           case "clear_content":
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant") {
                 const updated = prev.slice();
@@ -168,7 +170,8 @@ export function useChat(
 
           case "content_refresh":
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant" && typeof event.content === "string") {
                 const updated = prev.slice();
@@ -187,7 +190,8 @@ export function useChat(
             };
             segmentToolCalls = [...segmentToolCalls, newTc];
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant") {
                 const updated = prev.slice();
@@ -203,7 +207,8 @@ export function useChat(
             const output = event.output || event.result || "";
             const toolName = event.tool || event.name || "";
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant" && last.toolCalls?.length) {
                 const tc = last.toolCalls;
@@ -238,7 +243,8 @@ export function useChat(
           case "new_response":
             segmentToolCalls = [];
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant") {
                 const updated = prev.slice();
@@ -251,7 +257,8 @@ export function useChat(
 
           case "retrieval":
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant") {
                 const updated = prev.slice();
@@ -296,7 +303,23 @@ export function useChat(
             // /new or /reset: 重置本地状态，但保持当前 assistant 消息用于接收后续问候
             setLifecycleEvents([]);
             setLastUsage(null);
-            // 不创建新的 assistant 消息，继续用当前的 assistantMsgId 接收后续问候响应
+            // 如果 command_response 把空的 assistant 替换成了 command，需要新建 assistant 占位
+            const newAssistantId = `assistant-${Date.now()}`;
+            streamingAssistantIdRef.current = newAssistantId;
+            setMessages(prev => {
+              const last = prev[prev.length - 1];
+              // 如果最后一条是 command，说明 assistant 被替换了，需要新建占位
+              if (last?.role === "command") {
+                return [...prev, {
+                  id: newAssistantId,
+                  role: "assistant",
+                  content: "",
+                  createdAt: Date.now(),
+                  isStreaming: true,
+                }];
+              }
+              return prev;
+            });
             break;
           }
 
@@ -315,7 +338,9 @@ export function useChat(
             doneReceived = true;
             if (event.usage) setLastUsage(event.usage);
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              // 使用 streamingAssistantIdRef.current 获取最新的 assistant ID
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last && (last.role === "assistant" || last.role === "command")) {
                 const finishedAt = Date.now();
@@ -341,7 +366,8 @@ export function useChat(
           case "aborted":
             doneReceived = true;
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant") {
                 const updated = prev.slice();
@@ -362,7 +388,8 @@ export function useChat(
 
           case "error":
             setMessages(prev => {
-              const idx = prev.findIndex(m => m.id === assistantMsgId);
+              const targetId = streamingAssistantIdRef.current || assistantMsgId;
+              const idx = prev.findIndex(m => m.id === targetId);
               const last = idx >= 0 ? prev[idx] : null;
               if (idx >= 0 && last?.role === "assistant") {
                 const err = event.error || "";
@@ -384,7 +411,8 @@ export function useChat(
           ? e.message
           : `**Connection error:** ${e.message}`;
         setMessages(prev => {
-          const idx = prev.findIndex(m => m.id === assistantMsgId);
+          const targetId = streamingAssistantIdRef.current || assistantMsgId;
+          const idx = prev.findIndex(m => m.id === targetId);
           const last = idx >= 0 ? prev[idx] : null;
           if (idx >= 0 && last?.role === "assistant") {
             const updated = prev.slice();
@@ -413,7 +441,8 @@ export function useChat(
         }
       } else {
         setMessages(prev => {
-          const idx = prev.findIndex(m => m.id === assistantMsgId);
+          const targetId = streamingAssistantIdRef.current || assistantMsgId;
+          const idx = prev.findIndex(m => m.id === targetId);
           const last = idx >= 0 ? prev[idx] : null;
           if (idx >= 0 && last?.role === "assistant" && last.isStreaming) {
             const updated = prev.slice();

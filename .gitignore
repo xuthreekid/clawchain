@@ -26,6 +26,10 @@ backend/data/cron/
 backend/data/config.json
 backend/data/**/logs/
 backend/data/**/*.jsonl
+backend/data/**/*.db
+
+# Project analysis docs (local development only)
+docs-analysis/
 
 # Env files with secrets
 backend/.env
